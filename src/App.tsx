@@ -1,7 +1,15 @@
 import "./App.css";
+import Map from "./components/Map";
+import Path from "./components/Path";
+import Drawer from "./components/SideBar";
 
 function App() {
-  return <h1>Mapeeter</h1>;
+  return (
+    <div>
+      <Path />
+      <Drawer />
+    </div>
+  );
 }
 
 export default App;
