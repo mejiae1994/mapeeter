@@ -1,24 +1,33 @@
 import React, { useEffect, useRef, useState } from "react";
 import paths from "../assets/path.json";
 import Pin from "./Pin";
+import Draggable from "react-draggable";
+import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
+import useLocalStorage from "../hooks/useLocalStorageHook";
 
 type Position = {
   x: number;
   y: number;
 };
 
-export default function Map() {
-  const [path, setPath] = useState<any>([]);
+type Pin = {
+  x?: number;
+  y?: number;
+  color: string;
+  positioning?: string;
+};
+
+interface MapProps {
+  pinColor: string;
+}
+
+export default function Map({ pinColor }: MapProps) {
   const [hover, setHover] = useState<Position>({ x: 0, y: 0 });
   const [currentCountry, setCurrentCountry] = useState<string>("");
+  const [currentPin, setCurrentPin] = useState<Pin | null>(null);
+  const [pins, setPins] = useLocalStorage("pins");
 
-  function handlePathClick(e: React.MouseEvent<SVGElement>): void {
-    e.stopPropagation();
-    let currentPath: SVGElement = e.currentTarget;
-    let pathName: null | string = currentPath.getAttribute("name");
-    let pathClass: null | string = currentPath.getAttribute("class");
-    console.log(pathName || pathClass);
-  }
+  //handling on country hover display name of country
   function handleCountryName(
     e: React.MouseEvent<SVGElement>,
     pathName: string | null,
@@ -33,13 +42,30 @@ export default function Map() {
     // console.log(pathName || pathClass);
   }
 
-  // onClick={handlePathClick}
+  function handleCreatePin(e: React.MouseEvent): void {
+    e.stopPropagation();
+    if (!pinColor) {
+      return;
+    }
+
+    let pin: Pin = {
+      x: e.clientX - 10,
+      y: e.clientY - 10,
+      color: pinColor,
+      positioning: "absolute",
+    };
+
+    setPins("pins", pin);
+  }
+
+  // reading json data for paths to be rendered inside svg
   const pathElements = paths.map((path, index) => (
     <path
       onMouseMove={(e) => handleCountryName(e, path.name, path.class)}
       onMouseLeave={() => {
         setCurrentCountry("");
       }}
+      onClick={handleCreatePin}
       d={path.d}
       key={index}
       id={path.id ? path.id : undefined}
@@ -48,7 +74,24 @@ export default function Map() {
     />
   ));
 
-  console.log(hover);
+  //rendering the map pins
+  const mapPins = pins?.map((pin, index) => {
+    let thePosition = pin.positioning || "static";
+    return (
+      <Draggable key={index}>
+        <PlaceOutlinedIcon
+          sx={{
+            position: "absolute",
+            top: pin.y,
+            left: pin.x,
+            color: pin.color,
+          }}
+        />
+      </Draggable>
+    );
+  });
+
+  console.log(pinColor);
   return (
     <>
       <svg
@@ -66,6 +109,7 @@ export default function Map() {
       >
         {...pathElements}
       </svg>
+      {mapPins && mapPins}
       {currentCountry && (
         <h2
           style={{

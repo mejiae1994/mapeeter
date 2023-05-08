@@ -8,33 +8,33 @@ import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import CloseIcon from "@mui/icons-material/Close";
-import Pin from "./Pin";
-import Draggable from "react-draggable";
 
 type Anchor = "Menu";
 
-type Pin = {
-  x?: number;
-  y?: number;
-  color?: string;
-  positioning?: string;
-};
+const pinColors = [
+  "red",
+  "green",
+  "yellow",
+  "blue",
+  "purple",
+  "black",
+  "orange",
+  "orangered",
+];
 
-export default function Drawser() {
+export default function Drawser({ setPinColor }: any) {
   const [menuOpen, setMenuOpen] = useState({ Menu: false });
-  const [currentTab, setCurrentTab] = useState(0);
-  const [pins, setPins] = useState<Pin[]>([]);
-  const [currentPin, setCurrentPin] = useState<Pin | null>(null);
-  const [selected, setSelected] = useState<number | null>(null);
+  const [currentTab, setCurrentTab] = useState<number>(0);
+  const [selectedPin, setSelectedPin] = useState<number>(0);
 
   const handleGridItemClick = (event: React.MouseEvent, index: number) => {
-    setSelected(index);
-    let mouseX = event.nativeEvent.clientX - 200;
-    let mouseY = event.nativeEvent.clientY + 100;
-    let color = "violet";
-    let pin: Pin = { x: mouseX, y: mouseY, color: color };
-    setCurrentPin(pin);
+    event.preventDefault();
+    setSelectedPin(index);
   };
+
+  useEffect(() => {
+    setPinColor(pinColors[selectedPin]);
+  }, [selectedPin]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -48,36 +48,6 @@ export default function Drawser() {
 
   //create pin if currentpintab is not null and left click over a path occurs
   //lift state up and make sure it only creates when clicked on paths
-  function handleCreatePin(e: React.MouseEvent | any) {
-    e.stopPropagation();
-
-    if (
-      e.nativeEvent.target?.attributes?.role?.value === "presentation" &&
-      currentPin != null
-    ) {
-      console.log(
-        "mouseup click",
-        e.nativeEvent.target?.attributes?.role?.value
-      );
-      setPins([...pins, currentPin as Pin]);
-    }
-  }
-
-  const mapPins = pins.map((pin, index) => {
-    let thePosition = pin.positioning || "static";
-    return (
-      <Draggable key={index}>
-        <PlaceOutlinedIcon
-          sx={{
-            position: "absolute",
-            top: pin.y,
-            left: pin.x,
-            color: pin.color,
-          }}
-        />
-      </Draggable>
-    );
-  });
 
   // content that gets rendered when menu opens
   const list = (anchor: Anchor) => (
@@ -93,7 +63,6 @@ export default function Drawser() {
         fontSize: "1.2rem",
       }}
       role="presentation"
-      onClick={handleCreatePin}
     >
       <Tabs
         sx={{ border: "1px solid black" }}
@@ -123,7 +92,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 0)}
             item
             xs={2}
-            className={selected === 0 ? "selected" : ""}
+            className={selectedPin === 0 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "red" }} />
           </Grid>
@@ -131,7 +100,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 1)}
             item
             xs={2}
-            className={selected === 1 ? "selected" : ""}
+            className={selectedPin === 1 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "green" }} />
           </Grid>
@@ -139,7 +108,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 2)}
             item
             xs={2}
-            className={selected === 2 ? "selected" : ""}
+            className={selectedPin === 2 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "yellow" }} />
           </Grid>
@@ -147,7 +116,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 3)}
             item
             xs={2}
-            className={selected === 3 ? "selected" : ""}
+            className={selectedPin === 3 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "blue" }} />
           </Grid>
@@ -155,7 +124,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 4)}
             item
             xs={2}
-            className={selected === 4 ? "selected" : ""}
+            className={selectedPin === 4 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "purple" }} />
           </Grid>
@@ -163,7 +132,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 5)}
             item
             xs={2}
-            className={selected === 5 ? "selected" : ""}
+            className={selectedPin === 5 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "black" }} />
           </Grid>
@@ -171,7 +140,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 6)}
             item
             xs={2}
-            className={selected === 6 ? "selected" : ""}
+            className={selectedPin === 6 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "orange" }} />
           </Grid>
@@ -179,7 +148,7 @@ export default function Drawser() {
             onClick={(e) => handleGridItemClick(e, 7)}
             item
             xs={2}
-            className={selected === 7 ? "selected" : ""}
+            className={selectedPin === 7 ? "selected" : ""}
           >
             <PlaceOutlinedIcon sx={{ color: "orangered" }} />
           </Grid>
@@ -205,8 +174,6 @@ export default function Drawser() {
         </Button>
       )}
       {menuOpen["Menu"] && list("Menu")}
-
-      {mapPins && mapPins}
     </>
   );
 }
