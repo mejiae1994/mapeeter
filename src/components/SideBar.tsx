@@ -8,6 +8,7 @@ import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import CloseIcon from "@mui/icons-material/Close";
+import FavoritePin from "./FavoritePin";
 
 type Anchor = "Menu";
 
@@ -154,6 +155,7 @@ export default function Drawser({ setPinColor }: any) {
           </Grid>
         </Grid>
       )}
+      {currentTab === 1 && <FavoritePin />}
     </Box>
   );
 
