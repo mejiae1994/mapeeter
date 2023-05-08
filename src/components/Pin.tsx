@@ -1,17 +1,25 @@
-import * as React from "react";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
+import Draggable, { DraggableCore } from "react-draggable";
 
 type Pin = {
-  x: number;
-  y: number;
+  x?: number;
+  y?: number;
   color: string;
+  positioning?: string;
 };
 
-export default function Pin({ x, y, color }: Pin) {
+export default function Pin({ x, y, color, positioning }: Pin) {
+  let thePosition = positioning ? positioning : "static";
   return (
-    <svg
-      style={{ position: "absolute", top: y, right: x, backgroundColor: color }}
-      data-testid="PlaceOutlinedIcon"
-    ></svg>
+    <Draggable>
+      <PlaceOutlinedIcon
+        sx={{
+          position: { thePosition },
+          top: y,
+          right: x,
+          color: color,
+        }}
+      />
+    </Draggable>
   );
 }

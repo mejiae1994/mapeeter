@@ -22,3 +22,7 @@ svg path:hover {
   cursor: pointer;
   fill: rgb(167, 126, 126);
 }
+
+.selected {
+  background-color: rgb(222, 220, 220);
+}
