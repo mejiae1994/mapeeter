@@ -1,12 +1,6 @@
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import Draggable, { DraggableCore } from "react-draggable";
-
-type Pin = {
-  x?: number;
-  y?: number;
-  color: string;
-  positioning?: string;
-};
+import { Pin } from "../types/types";
 
 export default function Pin({ x, y, color, positioning }: Pin) {
   let thePosition = positioning ? positioning : "static";

@@ -9,6 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoritePin from "./FavoritePin";
+import Typography from "@mui/material/Typography";
 
 type Anchor = "Menu";
 
@@ -23,7 +24,19 @@ const pinColors = [
   "orangered",
 ];
 
-export default function Drawser({ setPinColor }: any) {
+type Pin = {
+  x?: number;
+  y?: number;
+  color: string;
+  positioning?: string;
+};
+
+interface DrawerProps {
+  setPinColor: (color: string) => void;
+  placedPin: Pin[] | undefined;
+}
+
+export default function Drawser({ setPinColor, placedPin }: DrawerProps) {
   const [menuOpen, setMenuOpen] = useState({ Menu: false });
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [selectedPin, setSelectedPin] = useState<number>(0);
@@ -56,7 +69,7 @@ export default function Drawser({ setPinColor }: any) {
       sx={{
         width: 400,
         height: "100vh",
-        border: "1px solid red",
+        // border: "1px solid red",
         position: "absolute",
         top: 0,
         right: 0,
@@ -66,7 +79,7 @@ export default function Drawser({ setPinColor }: any) {
       role="presentation"
     >
       <Tabs
-        sx={{ border: "1px solid black" }}
+        // sx={{ border: "1px solid black" }}
         value={currentTab}
         onChange={handleTabChange}
         aria-label="icon tabs example"
@@ -88,74 +101,80 @@ export default function Drawser({ setPinColor }: any) {
         render all pins of that array at specific locations
       */}
       {currentTab === 0 && (
-        <Grid container columns={8}>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 0)}
-            item
-            xs={2}
-            className={selectedPin === 0 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "red" }} />
+        <>
+          {" "}
+          <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
+            Available Pins
+          </Typography>
+          <Grid container columns={8}>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 0)}
+              item
+              xs={2}
+              className={selectedPin === 0 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "red" }} />
+            </Grid>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 1)}
+              item
+              xs={2}
+              className={selectedPin === 1 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "green" }} />
+            </Grid>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 2)}
+              item
+              xs={2}
+              className={selectedPin === 2 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "yellow" }} />
+            </Grid>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 3)}
+              item
+              xs={2}
+              className={selectedPin === 3 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "blue" }} />
+            </Grid>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 4)}
+              item
+              xs={2}
+              className={selectedPin === 4 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "purple" }} />
+            </Grid>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 5)}
+              item
+              xs={2}
+              className={selectedPin === 5 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "black" }} />
+            </Grid>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 6)}
+              item
+              xs={2}
+              className={selectedPin === 6 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "orange" }} />
+            </Grid>
+            <Grid
+              onClick={(e) => handleGridItemClick(e, 7)}
+              item
+              xs={2}
+              className={selectedPin === 7 ? "selected" : ""}
+            >
+              <PlaceOutlinedIcon sx={{ color: "orangered" }} />
+            </Grid>
           </Grid>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 1)}
-            item
-            xs={2}
-            className={selectedPin === 1 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "green" }} />
-          </Grid>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 2)}
-            item
-            xs={2}
-            className={selectedPin === 2 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "yellow" }} />
-          </Grid>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 3)}
-            item
-            xs={2}
-            className={selectedPin === 3 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "blue" }} />
-          </Grid>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 4)}
-            item
-            xs={2}
-            className={selectedPin === 4 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "purple" }} />
-          </Grid>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 5)}
-            item
-            xs={2}
-            className={selectedPin === 5 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "black" }} />
-          </Grid>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 6)}
-            item
-            xs={2}
-            className={selectedPin === 6 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "orange" }} />
-          </Grid>
-          <Grid
-            onClick={(e) => handleGridItemClick(e, 7)}
-            item
-            xs={2}
-            className={selectedPin === 7 ? "selected" : ""}
-          >
-            <PlaceOutlinedIcon sx={{ color: "orangered" }} />
-          </Grid>
-        </Grid>
+        </>
       )}
-      {currentTab === 1 && <FavoritePin />}
+      {currentTab === 1 && <FavoritePin placedPin={placedPin} />}
     </Box>
   );
 

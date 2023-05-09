@@ -1,31 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import paths from "../assets/path.json";
-import Pin from "./Pin";
 import Draggable from "react-draggable";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
-import useLocalStorage from "../hooks/useLocalStorageHook";
+import { Pin } from "../types/types";
 
 type Position = {
   x: number;
   y: number;
 };
 
-type Pin = {
-  x?: number;
-  y?: number;
-  color: string;
-  positioning?: string;
-};
-
 interface MapProps {
   pinColor: string;
+  setMapPin: (pin: Pin) => void;
+  placedPin: Pin[] | undefined;
 }
 
-export default function Map({ pinColor }: MapProps) {
+export default function Map({ pinColor, setMapPin, placedPin }: MapProps) {
   const [hover, setHover] = useState<Position>({ x: 0, y: 0 });
   const [currentCountry, setCurrentCountry] = useState<string>("");
-  const [currentPin, setCurrentPin] = useState<Pin | null>(null);
-  const [pins, setPins] = useLocalStorage("pins");
+  // const [currentPin, setCurrentPin] = useState<Pin | null>(null);
 
   //handling on country hover display name of country
   function handleCountryName(
@@ -55,7 +48,7 @@ export default function Map({ pinColor }: MapProps) {
       positioning: "absolute",
     };
 
-    setPins("pins", pin);
+    setMapPin(pin);
   }
 
   // reading json data for paths to be rendered inside svg
@@ -75,7 +68,7 @@ export default function Map({ pinColor }: MapProps) {
   ));
 
   //rendering the map pins
-  const mapPins = pins?.map((pin, index) => {
+  const mapPins = placedPin?.map((pin, index) => {
     let thePosition = pin.positioning || "static";
     return (
       <Draggable key={index}>
