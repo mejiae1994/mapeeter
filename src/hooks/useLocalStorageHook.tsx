@@ -1,4 +1,3 @@
-import { pink } from "@mui/material/colors";
 import { useEffect, useState } from "react";
 import { Pin } from "../types/types";
 
@@ -14,19 +13,15 @@ type localStorageReturnType = [
 export default function useLocalStorage(
   itemKey: string
 ): localStorageReturnType {
-  const [mapPins, setMapPins] = useState<Pin[] | []>([]);
-
-  //init state, fetch localstorage data
-  useEffect((): void => {
-    console.log("fetching localstorage data if exists");
+  const [mapPins, setMapPins] = useState<Pin[] | []>(() => {
     let storage: string | null = localStorage.getItem(itemKey || "");
-    const pinArray: Pin[] | [] = storage ? JSON.parse(storage) : undefined;
-    setMapPins(pinArray);
-  }, []);
+    return storage ? JSON.parse(storage) : [];
+  });
 
   //keep localstorage in sync
   useEffect((): void => {
-    if (mapPins.length > 0) {
+    console.log("second use effect");
+    if (mapPins && mapPins.length >= 0) {
       localStorage.setItem(itemKey, JSON.stringify(mapPins));
     }
   }, [mapPins]);
@@ -35,7 +30,6 @@ export default function useLocalStorage(
   //for now store the mapPins
   //does the storage already contain information
   function storeItem(data: Pin): void {
-    console.log(data);
     let newPinArray: Pin[] = mapPins ? [...mapPins, data] : [data];
     setMapPins(newPinArray);
     localStorage.setItem(itemKey, JSON.stringify(newPinArray));
@@ -43,11 +37,10 @@ export default function useLocalStorage(
 
   function deleteItem(data: Pin): void {
     setMapPins((prevItems) =>
-      prevItems?.filter((item) => item.x != data.x && item.y != data.y)
+      prevItems?.filter((item) => item.name != data.name)
     );
   }
 
-  console.log(mapPins);
   //custom hook returns the data
   return [mapPins, storeItem, deleteItem];
 }

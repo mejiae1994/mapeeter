@@ -13,13 +13,8 @@ body {
   background-color: rgb(78, 164, 222);
 }
 
-.map {
-  width: 100%;
-  height: auto;
-}
-
 svg path:hover {
-  cursor: pointer;
+  /* cursor: pointer; */
   fill: rgb(167, 126, 126);
 }
 

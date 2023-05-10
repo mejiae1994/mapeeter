@@ -3,6 +3,16 @@ import paths from "../assets/path.json";
 import Draggable from "react-draggable";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import { Pin } from "../types/types";
+import {
+  INITIAL_VALUE,
+  ReactSVGPanZoom,
+  TOOL_NONE,
+  TOOL_PAN,
+  TOOL_AUTO,
+  fitSelection,
+  zoomOnViewerCenter,
+  fitToViewer,
+} from "react-svg-pan-zoom";
 
 type Position = {
   x: number;
@@ -16,7 +26,7 @@ interface MapProps {
   highlight: string;
 }
 
-export default function Map({
+export default function SvgMap({
   pinColor,
   setMapPin,
   placedPin,
@@ -24,8 +34,48 @@ export default function Map({
 }: MapProps) {
   const [hover, setHover] = useState<Position>({ x: 0, y: 0 });
   const [currentCountry, setCurrentCountry] = useState<string>("");
-  // const [currentPin, setCurrentPin] = useState<Pin | null>(null);
+  const [panning, setPanning] = useState(false);
+  //react-svg-pan-zoom
+  const start = [0, 0];
+  const Viewer = useRef(null);
+  const [tool, setTool] = useState(TOOL_AUTO);
+  const [value, setValue] = useState(INITIAL_VALUE);
+  const [scaleFactorMin, setScaleFactorMin] = useState(1);
+  const scaleFactorMax = 1.25;
 
+  useEffect(() => {
+    // Viewer.current.pan(...start);
+    Viewer.current.fitToViewer();
+  }, []);
+
+  /* Read all the available methods in the documentation */
+  // const _zoomOnViewerCenter1 = () => Viewer.current.zoomOnViewerCenter(1.1);
+  // const _fitSelection1 = () => Viewer.current.fitSelection(40, 40, 200, 200);
+  // const _fitToViewer1 = () => Viewer.current.fitToViewer();
+
+  //@ts-ignore
+  function precisionRound(number, precision) {
+    const factor = Math.pow(10, precision);
+    return Math.round(number * factor) / factor;
+  }
+
+  const lockToBoundaries = (v) => {
+    const zoomFactor = v.a || v.d;
+    const scaledMaxHeight = v.SVGHeight * zoomFactor - v.viewerHeight;
+    const scaledMaxWidth = v.SVGWidth * zoomFactor - v.viewerWidth;
+
+    const heightRatio = precisionRound(v.viewerHeight / v.SVGHeight, 2);
+    const widthRatio = precisionRound(v.viewerWidth / v.SVGWidth, 2);
+    setScaleFactorMin(Math.max(heightRatio, widthRatio));
+    setValue({
+      ...v,
+      // eslint-disable-next-line no-nested-ternary
+      e: v.e > 0 ? 0 : v.e < 0 - scaledMaxWidth ? 0 - scaledMaxWidth : v.e,
+      // limit up/down panning to within the SVG
+      // eslint-disable-next-line no-nested-ternary
+      f: v.f > 0 ? 0 : v.f < 0 - scaledMaxHeight ? 0 - scaledMaxHeight : v.f,
+    });
+  };
   //handling on country hover display name of country
   function handleCountryName(
     e: React.MouseEvent<SVGElement>,
@@ -46,6 +96,7 @@ export default function Map({
     pathName: string | null,
     pathClass: string | null
   ): void {
+    // if (panning) return;
     e.stopPropagation();
     if (!pinColor) {
       return;
@@ -106,19 +157,44 @@ export default function Map({
 
   return (
     <>
-      <svg
-        baseProfile="tiny"
-        fill="#ececec"
-        stroke="black"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth=".2"
-        version="1.2"
-        viewBox="0 -50 2000 1400"
-        xmlns="http://www.w3.org/2000/svg"
+      <ReactSVGPanZoom
+        SVGBackground="rgb(78, 164, 222)"
+        // SVGBackground="blue"
+        style={{
+          fill: "white",
+          stroke: "black",
+          strokeWidth: ".4",
+          strokeLinecap: "round",
+          strokeLinejoin: "round",
+        }}
+        detectAutoPan={false}
+        ref={Viewer}
+        width={2048}
+        height={1400}
+        tool={tool}
+        onChangeTool={setTool}
+        scaleFactorMin={scaleFactorMin}
+        value={value}
+        onChangeValue={setValue}
+        customToolbar={() => <></>}
+        onZoom={(e) => {
+          lockToBoundaries(e);
+        }}
+        onPan={(e) => {
+          setPanning(true);
+          lockToBoundaries(e);
+        }}
       >
-        {...pathElements}
-      </svg>
+        <svg
+          baseProfile="tiny"
+          version="1.2"
+          xmlns="http://www.w3.org/2000/svg"
+          width={2048}
+          height={1400}
+        >
+          {...pathElements}
+        </svg>
+      </ReactSVGPanZoom>
       {mapPins && mapPins}
       {currentCountry && (
         <h2

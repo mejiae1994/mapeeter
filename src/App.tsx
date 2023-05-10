@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import Map from "./components/Map";
+import SvgMap from "./components/SvgMap";
 import Drawer from "./components/SideBar";
 import useLocalStorage from "./hooks/useLocalStorageHook";
 import { Pin } from "./types/types";
@@ -15,8 +16,8 @@ function App() {
   };
 
   return (
-    <div>
-      <Map
+    <div className="App">
+      <SvgMap
         highlight={highlightedPin}
         pinColor={currentPinColor}
         setMapPin={(pin: Pin) => setPins(pin)}
