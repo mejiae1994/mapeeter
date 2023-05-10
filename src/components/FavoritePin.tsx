@@ -11,21 +11,23 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import { Pin } from "../types/types";
 
+//change any to function for deletePin
 interface FavoritePinProps {
   placedPin: Pin[] | [];
   deletePin: any;
+  setHighlight: any;
 }
 
 export default function FavoritePin({
   placedPin,
   deletePin,
+  setHighlight,
 }: FavoritePinProps) {
-  const [dense, setDense] = React.useState(false);
-  const [secondary, setSecondary] = React.useState(false);
-
   const mapPins = placedPin?.map((pin, index) => {
     return (
       <ListItem
+        onMouseOver={() => setHighlight(pin.name)}
+        onMouseLeave={() => setHighlight("")}
         key={index}
         secondaryAction={
           <IconButton
@@ -43,8 +45,9 @@ export default function FavoritePin({
           <Avatar>{createPin(pin)}</Avatar>
         </ListItemAvatar>
         <ListItemText
+          sx={{ color: "black" }}
           primary={pin.countryName}
-          secondary={secondary ? "Secondary text" : null}
+          secondary={`Coordinates: x: ${pin.x} y: ${pin.y}`}
         />
       </ListItem>
     );
@@ -67,7 +70,7 @@ export default function FavoritePin({
         Your Pins
       </Typography>
       <Grid item xs={12} md={6}>
-        <List dense={dense}>
+        <List dense={true}>
           {mapPins.length > 0 ? mapPins : <h5>No Placed Pins</h5>}
         </List>
       </Grid>

@@ -6,11 +6,9 @@ import useLocalStorage from "./hooks/useLocalStorageHook";
 import { Pin } from "./types/types";
 
 function App() {
-  //App will probably handle the creation of pins by lifting state up, maintain a list of pins with positions to be passed into the Map component
-  //push pin into array only after being dropped into place?
-
   const [currentPinColor, setCurrentPinColor] = useState<string>("");
   const [pins, setPins, deletePins] = useLocalStorage("pins");
+  const [highlightedPin, setHighlightedPin] = useState("");
 
   const handleDeletePin = (e: React.MouseEvent, pinToDelete: Pin) => {
     deletePins(pinToDelete);
@@ -19,11 +17,13 @@ function App() {
   return (
     <div>
       <Map
+        highlight={highlightedPin}
         pinColor={currentPinColor}
         setMapPin={(pin: Pin) => setPins(pin)}
         placedPin={pins}
       />
       <Drawer
+        setHighlight={setHighlightedPin}
         setPinColor={(color: string) => {
           setCurrentPinColor(color);
         }}

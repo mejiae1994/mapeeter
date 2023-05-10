@@ -13,9 +13,15 @@ interface MapProps {
   pinColor: string;
   setMapPin: (pin: Pin) => void;
   placedPin: Pin[] | undefined;
+  highlight: string;
 }
 
-export default function Map({ pinColor, setMapPin, placedPin }: MapProps) {
+export default function Map({
+  pinColor,
+  setMapPin,
+  placedPin,
+  highlight,
+}: MapProps) {
   const [hover, setHover] = useState<Position>({ x: 0, y: 0 });
   const [currentCountry, setCurrentCountry] = useState<string>("");
   // const [currentPin, setCurrentPin] = useState<Pin | null>(null);
@@ -45,13 +51,18 @@ export default function Map({ pinColor, setMapPin, placedPin }: MapProps) {
       return;
     }
 
-    let country: string | null = pathName || pathClass;
+    let country: string = (pathName || pathClass) as string;
+
+    let xCord = e.clientX - 10;
+    let yCord = e.clientY - 10;
+    let pinName = `${xCord}${yCord}`;
 
     let pin: Pin = {
-      x: e.clientX - 10,
-      y: e.clientY - 10,
+      x: xCord,
+      y: yCord,
+      name: pinName,
       color: pinColor,
-      countryName: country as string,
+      countryName: country,
       positioning: "absolute",
     };
 
@@ -85,6 +96,8 @@ export default function Map({ pinColor, setMapPin, placedPin }: MapProps) {
             top: pin.y,
             left: pin.x,
             color: pin.color,
+            backgroundColor: highlight === pin.name ? "grey" : "transparent",
+            opacity: highlight === pin.name ? 0.4 : 1,
           }}
         />
       </Draggable>

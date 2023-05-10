@@ -29,12 +29,14 @@ interface DrawerProps {
   setPinColor: (color: string) => void;
   placedPin: Pin[] | [];
   handleDeletePin: any;
+  setHighlight: any;
 }
 
 export default function Drawser({
   setPinColor,
   placedPin,
   handleDeletePin,
+  setHighlight,
 }: DrawerProps) {
   const [menuOpen, setMenuOpen] = useState({ Menu: false });
   const [currentTab, setCurrentTab] = useState<number>(0);
@@ -173,7 +175,11 @@ export default function Drawser({
         </>
       )}
       {currentTab === 1 && (
-        <FavoritePin placedPin={placedPin} deletePin={handleDeletePin} />
+        <FavoritePin
+          placedPin={placedPin}
+          deletePin={handleDeletePin}
+          setHighlight={setHighlight}
+        />
       )}
     </Box>
   );
