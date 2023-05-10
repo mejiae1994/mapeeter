@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Map from "./components/Map";
 import Drawer from "./components/SideBar";
@@ -10,13 +10,17 @@ function App() {
   //push pin into array only after being dropped into place?
 
   const [currentPinColor, setCurrentPinColor] = useState<string>("");
-  const [pins, setPins] = useLocalStorage("pins");
+  const [pins, setPins, deletePins] = useLocalStorage("pins");
+
+  const handleDeletePin = (e: React.MouseEvent, pinToDelete: Pin) => {
+    deletePins(pinToDelete);
+  };
 
   return (
     <div>
       <Map
         pinColor={currentPinColor}
-        setMapPin={(pin: Pin) => setPins("pins", pin)}
+        setMapPin={(pin: Pin) => setPins(pin)}
         placedPin={pins}
       />
       <Drawer
@@ -24,6 +28,7 @@ function App() {
           setCurrentPinColor(color);
         }}
         placedPin={pins}
+        handleDeletePin={handleDeletePin}
       />
     </div>
   );

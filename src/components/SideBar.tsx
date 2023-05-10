@@ -10,6 +10,7 @@ import PersonPinIcon from "@mui/icons-material/PersonPin";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoritePin from "./FavoritePin";
 import Typography from "@mui/material/Typography";
+import { Pin } from "../types/types";
 
 type Anchor = "Menu";
 
@@ -24,19 +25,17 @@ const pinColors = [
   "orangered",
 ];
 
-type Pin = {
-  x?: number;
-  y?: number;
-  color: string;
-  positioning?: string;
-};
-
 interface DrawerProps {
   setPinColor: (color: string) => void;
-  placedPin: Pin[] | undefined;
+  placedPin: Pin[] | [];
+  handleDeletePin: any;
 }
 
-export default function Drawser({ setPinColor, placedPin }: DrawerProps) {
+export default function Drawser({
+  setPinColor,
+  placedPin,
+  handleDeletePin,
+}: DrawerProps) {
   const [menuOpen, setMenuOpen] = useState({ Menu: false });
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [selectedPin, setSelectedPin] = useState<number>(0);
@@ -102,7 +101,6 @@ export default function Drawser({ setPinColor, placedPin }: DrawerProps) {
       */}
       {currentTab === 0 && (
         <>
-          {" "}
           <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
             Available Pins
           </Typography>
@@ -174,7 +172,9 @@ export default function Drawser({ setPinColor, placedPin }: DrawerProps) {
           </Grid>
         </>
       )}
-      {currentTab === 1 && <FavoritePin placedPin={placedPin} />}
+      {currentTab === 1 && (
+        <FavoritePin placedPin={placedPin} deletePin={handleDeletePin} />
+      )}
     </Box>
   );
 

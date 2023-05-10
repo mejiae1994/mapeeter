@@ -11,11 +11,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import { Pin } from "../types/types";
 
+interface FavoritePinProps {
+  placedPin: Pin[] | [];
+  deletePin: any;
+}
+
 export default function FavoritePin({
   placedPin,
-}: {
-  placedPin: Pin[] | undefined;
-}) {
+  deletePin,
+}: FavoritePinProps) {
   const [dense, setDense] = React.useState(false);
   const [secondary, setSecondary] = React.useState(false);
 
@@ -24,7 +28,13 @@ export default function FavoritePin({
       <ListItem
         key={index}
         secondaryAction={
-          <IconButton edge="end" aria-label="delete">
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            onClick={(e: React.MouseEvent) => {
+              deletePin(e, pin);
+            }}
+          >
             <DeleteIcon />
           </IconButton>
         }
@@ -33,7 +43,7 @@ export default function FavoritePin({
           <Avatar>{createPin(pin)}</Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary="country placeholder"
+          primary={pin.countryName}
           secondary={secondary ? "Secondary text" : null}
         />
       </ListItem>
@@ -42,7 +52,6 @@ export default function FavoritePin({
 
   //add return type later
   function createPin(pin: Pin) {
-    console.log(pin);
     return (
       <PlaceOutlinedIcon
         sx={{
@@ -52,13 +61,16 @@ export default function FavoritePin({
     );
   }
 
-  console.log(placedPin);
   return (
-    <Grid item xs={12} md={6}>
-      <Typography sx={{ mt: 0.5 }} variant="h6" component="div">
+    <>
+      <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
         Your Pins
       </Typography>
-      <List dense={dense}>{mapPins ? mapPins : <h5>No Placed Pins</h5>}</List>
-    </Grid>
+      <Grid item xs={12} md={6}>
+        <List dense={dense}>
+          {mapPins.length > 0 ? mapPins : <h5>No Placed Pins</h5>}
+        </List>
+      </Grid>
+    </>
   );
 }

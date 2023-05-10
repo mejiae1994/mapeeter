@@ -35,16 +35,23 @@ export default function Map({ pinColor, setMapPin, placedPin }: MapProps) {
     // console.log(pathName || pathClass);
   }
 
-  function handleCreatePin(e: React.MouseEvent): void {
+  function handleCreatePin(
+    e: React.MouseEvent,
+    pathName: string | null,
+    pathClass: string | null
+  ): void {
     e.stopPropagation();
     if (!pinColor) {
       return;
     }
 
+    let country: string | null = pathName || pathClass;
+
     let pin: Pin = {
       x: e.clientX - 10,
       y: e.clientY - 10,
       color: pinColor,
+      countryName: country as string,
       positioning: "absolute",
     };
 
@@ -58,7 +65,7 @@ export default function Map({ pinColor, setMapPin, placedPin }: MapProps) {
       onMouseLeave={() => {
         setCurrentCountry("");
       }}
-      onClick={handleCreatePin}
+      onClick={(e) => handleCreatePin(e, path.name, path.class)}
       d={path.d}
       key={index}
       id={path.id ? path.id : undefined}
@@ -84,7 +91,6 @@ export default function Map({ pinColor, setMapPin, placedPin }: MapProps) {
     );
   });
 
-  console.log(pinColor);
   return (
     <>
       <svg
