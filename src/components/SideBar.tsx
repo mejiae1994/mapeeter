@@ -38,8 +38,8 @@ export default function Drawser({
   handleDeletePin,
   setHighlight,
 }: DrawerProps) {
-  const [menuOpen, setMenuOpen] = useState({ Menu: false });
-  const [currentTab, setCurrentTab] = useState<number>(0);
+  const [menuOpen, setMenuOpen] = useState({ Menu: true });
+  const [currentTab, setCurrentTab] = useState<number>(1);
   const [selectedPin, setSelectedPin] = useState<number>(0);
 
   const handleGridItemClick = (event: React.MouseEvent, index: number) => {

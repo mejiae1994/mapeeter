@@ -1,18 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import paths from "../assets/path.json";
-import Draggable from "react-draggable";
+import { Button } from "@mui/material";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import { Pin } from "../types/types";
-import {
-  INITIAL_VALUE,
-  ReactSVGPanZoom,
-  TOOL_NONE,
-  TOOL_PAN,
-  TOOL_AUTO,
-  fitSelection,
-  zoomOnViewerCenter,
-  fitToViewer,
-} from "react-svg-pan-zoom";
+import { INITIAL_VALUE, ReactSVGPanZoom, TOOL_AUTO } from "react-svg-pan-zoom";
+import { Translate } from "@mui/icons-material";
+import PinModal from "./PinModal";
 
 type Position = {
   x: number;
@@ -26,6 +19,12 @@ interface MapProps {
   highlight: string;
 }
 
+//@ts-ignore
+function precisionRound(number, precision) {
+  const factor = Math.pow(10, precision);
+  return Math.round(number * factor) / factor;
+}
+
 export default function SvgMap({
   pinColor,
   setMapPin,
@@ -34,32 +33,23 @@ export default function SvgMap({
 }: MapProps) {
   const [hover, setHover] = useState<Position>({ x: 0, y: 0 });
   const [currentCountry, setCurrentCountry] = useState<string>("");
-  const [panning, setPanning] = useState(false);
   //react-svg-pan-zoom
-  const start = [0, 0];
   const Viewer = useRef(null);
+  const [transform, setTransform] = useState(null);
   const [tool, setTool] = useState(TOOL_AUTO);
   const [value, setValue] = useState(INITIAL_VALUE);
   const [scaleFactorMin, setScaleFactorMin] = useState(1);
-  const scaleFactorMax = 1.25;
+  const [mouseCoord, setMouseCoord] = useState({ x: 0, y: 0 });
+  const [translatedMouse, setTranslatedMouse] = useState({ x: 0, y: 0 });
+  const scaleFactorMax = 6;
 
   useEffect(() => {
-    // Viewer.current.pan(...start);
     Viewer.current.fitToViewer();
   }, []);
 
-  /* Read all the available methods in the documentation */
-  // const _zoomOnViewerCenter1 = () => Viewer.current.zoomOnViewerCenter(1.1);
-  // const _fitSelection1 = () => Viewer.current.fitSelection(40, 40, 200, 200);
-  // const _fitToViewer1 = () => Viewer.current.fitToViewer();
-
-  //@ts-ignore
-  function precisionRound(number, precision) {
-    const factor = Math.pow(10, precision);
-    return Math.round(number * factor) / factor;
-  }
-
+  //set max zoom in/out
   const lockToBoundaries = (v) => {
+    setTransform(v);
     const zoomFactor = v.a || v.d;
     const scaledMaxHeight = v.SVGHeight * zoomFactor - v.viewerHeight;
     const scaledMaxWidth = v.SVGWidth * zoomFactor - v.viewerWidth;
@@ -83,12 +73,32 @@ export default function SvgMap({
     pathClass: string | null
   ): void {
     e.stopPropagation();
+    setMouseCoord({ ...mouseCoord, x: e.clientX, y: e.clientY });
+    let translated = getTransformedPoint(e.clientX, e.clientY);
+    setTranslatedMouse({
+      ...translatedMouse,
+      x: translated.x,
+      y: translated.y,
+    });
     let clientX = e.clientX + 20;
     let clientY = e.clientY + 20;
     setHover({ ...hover, x: clientX, y: clientY });
     let countryName: string | null = pathName || pathClass;
     setCurrentCountry(countryName as string);
     // console.log(pathName || pathClass);
+  }
+
+  function getTransformedPoint(x, y) {
+    const originalPoint = new DOMPoint(x, y);
+    const transformNode = new DOMMatrix([
+      transform?.a,
+      transform?.b,
+      transform?.c,
+      transform?.d,
+      transform?.e,
+      transform?.f,
+    ]);
+    return transformNode.invertSelf().transformPoint(originalPoint);
   }
 
   function handleCreatePin(
@@ -102,14 +112,15 @@ export default function SvgMap({
       return;
     }
 
-    let country: string = (pathName || pathClass) as string;
-    let xCord = e.clientX - 10;
-    let yCord = e.clientY - 10;
-    let pinName = `${xCord}${yCord}`;
+    let coord = getTransformedPoint(e.clientX, e.clientY);
 
+    let country: string = (pathName || pathClass) as string;
+    let pinName = `${coord.x}${coord.y}`;
+
+    let a = (transform ? 1 / transform.a : 1) * 10;
     let pin: Pin = {
-      x: xCord,
-      y: yCord,
+      x: coord.x - 12,
+      y: coord.y - 12,
       name: pinName,
       color: pinColor,
       countryName: country,
@@ -135,31 +146,106 @@ export default function SvgMap({
     />
   ));
 
+  function normalizeValue(value, min, max, rangeMin, rangeMax) {
+    const normalizedValue = (value - min) / (max - min);
+    const scaledValue = (rangeMax - rangeMin) * normalizedValue + rangeMin;
+    return scaledValue;
+  }
+
+  const baseValue = 2;
+  const minValue = transform?.a || 1;
+  // const minValue = 1;
+  const maxValue = 5.8;
+  const rangeMin = 12;
+  const rangeMax = 11;
+
+  const scaledValue = normalizeValue(
+    baseValue,
+    minValue,
+    maxValue,
+    rangeMin,
+    rangeMax
+  );
+
   //rendering the map pins
   const mapPins = placedPin?.map((pin, index) => {
-    let thePosition = pin.positioning || "static";
+    // let a = transform ? 1 / transform.a : 1;
+    let a = transform ? 1 / transform.a : 1;
+    let scaleW = `${24 * a}px`;
+    let scaleH = `${24 * a}px`;
+    // width={`${Math.round(scaledValue)}px`}
+    // height={`${Math.round(scaledValue)}px`}
+
     return (
-      <Draggable key={index}>
-        <PlaceOutlinedIcon
-          sx={{
-            position: "absolute",
-            top: pin.y,
-            left: pin.x,
-            color: pin.color,
-            backgroundColor: highlight === pin.name ? "grey" : "transparent",
-            opacity: highlight === pin.name ? 0.4 : 1,
-            borderRadius: highlight === pin.name ? "1rem" : "",
-          }}
-        />
-      </Draggable>
+      // <PlaceOutlinedIcon
+      //   fill="grey"
+      //   viewBox="0 0 24 24"
+      //   width="24"
+      //   height="24"
+      //   transform={`translate(${pin.x}, ${pin.y})`}
+      //   sx={{
+      //     color: pin.color,
+      //     backgroundColor: highlight === pin.name ? "grey" : "transparent",
+      //     opacity: highlight === pin.name ? 0.4 : 1,
+      //     borderRadius: highlight === pin.name ? "1rem" : "",
+      //   }}
+      // />
+
+      // <svg
+      //   xmlns="http://www.w3.org/2000/svg"
+      //   width="24"
+      //   viewBox="0 0 24 24"
+      //   height="24"
+      //   transform={`translate(${pin.x}, ${pin.y})`}
+      //   style={{
+      //     // backgroundColor: highlight === pin.name ? "grey" : "transparent",
+      //     backgroundColor: "black",
+      //     opacity: highlight === pin.name ? 0.4 : 1,
+      //     borderRadius: highlight === pin.name ? "1rem" : "",
+      //   }}
+      // >
+      //   <path
+      //     fill={pin.color}
+      //     d="M12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-1.8C18 6.57 15.35 4 12 4s-6 2.57-6 6.2c0 2.34 1.95 5.44 6 9.14 4.05-3.7 6-6.8 6-9.14zM12 2c4.2 0 8 3.22 8 8.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 5.22 7.8 2 12 2z"
+      //   />
+      // </svg>
+
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        viewBox="0 0 24 24"
+        height="24"
+        transform={`translate(${pin.x}, ${pin.y})`}
+        onClick={() => console.log("clicked the pin")}
+      >
+        <foreignObject width="100%" height="100%">
+          <div
+            xmlns="http://www.w3.org/1999/xhtml"
+            style={{
+              width: "100%",
+              height: "100%",
+              opacity: highlight === pin.name ? 0.6 : 1,
+              borderRadius: highlight === pin.name ? "1rem" : "",
+              backgroundColor: highlight === pin.name ? "grey" : "transparent",
+            }}
+          >
+            <svg width="100%" height="100%">
+              <path
+                fill={pin.color}
+                d="M12 12c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6-1.8C18 6.57 15.35 4 12 4s-6 2.57-6 6.2c0 2.34 1.95 5.44 6 9.14 4.05-3.7 6-6.8 6-9.14zM12 2c4.2 0 8 3.22 8 8.2 0 3.32-2.67 7.25-8 11.8-5.33-4.55-8-8.48-8-11.8C4 5.22 7.8 2 12 2z"
+              />
+            </svg>
+          </div>
+        </foreignObject>
+      </svg>
     );
   });
 
   return (
     <>
       <ReactSVGPanZoom
+        detectAutoPan={false}
         SVGBackground="rgb(78, 164, 222)"
-        // SVGBackground="blue"
         style={{
           fill: "white",
           stroke: "black",
@@ -167,13 +253,14 @@ export default function SvgMap({
           strokeLinecap: "round",
           strokeLinejoin: "round",
         }}
-        detectAutoPan={false}
         ref={Viewer}
         width={2048}
         height={1400}
+        scaleFactorOnWheel={1.05}
         tool={tool}
         onChangeTool={setTool}
-        scaleFactorMin={scaleFactorMin}
+        scaleFactorMin={scaleFactorMin - 0.001}
+        scaleFactorMax={scaleFactorMax}
         value={value}
         onChangeValue={setValue}
         customToolbar={() => <></>}
@@ -181,7 +268,6 @@ export default function SvgMap({
           lockToBoundaries(e);
         }}
         onPan={(e) => {
-          setPanning(true);
           lockToBoundaries(e);
         }}
       >
@@ -193,9 +279,36 @@ export default function SvgMap({
           height={1400}
         >
           {...pathElements}
+          {mapPins && mapPins}
         </svg>
       </ReactSVGPanZoom>
-      {mapPins && mapPins}
+      {/* <div
+        style={{
+          position: "absolute",
+          top: "0",
+          left: "0",
+          fontSize: "2rem",
+          color: "black",
+          maxWidth: "50vw",
+        }}
+      >
+        {`X: ${mouseCoord.x} Y: ${mouseCoord.y} tX: ${translatedMouse.x} tY: ${translatedMouse.y} VScale: ${transform?.a} HScale: ${transform?.d} `}
+      </div> */}
+      <PinModal />
+      <Button
+        sx={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          color: "whitesmoke",
+        }}
+        variant="outlined"
+        onClick={() => {
+          Viewer.current.reset();
+        }}
+      >
+        Reset View
+      </Button>
       {currentCountry && (
         <h2
           style={{

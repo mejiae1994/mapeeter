@@ -88,7 +88,7 @@ export default function Map({
   const mapPins = placedPin?.map((pin, index) => {
     let thePosition = pin.positioning || "static";
     return (
-      <Draggable key={index}>
+      <Draggable key={index} onStart={() => false}>
         <PlaceOutlinedIcon
           sx={{
             position: "absolute",
