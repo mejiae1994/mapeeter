@@ -281,7 +281,7 @@ export default function SvgMap({
           position: "absolute",
           bottom: "0",
           left: "0",
-          color: "whitesmoke",
+          color: "black",
         }}
         variant="outlined"
         onClick={() => {

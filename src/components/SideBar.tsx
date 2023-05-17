@@ -8,9 +8,15 @@ import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import PersonPinIcon from "@mui/icons-material/PersonPin";
 import CloseIcon from "@mui/icons-material/Close";
+import LabelIcon from "@mui/icons-material/Label";
 import FavoritePin from "./FavoritePin";
 import Typography from "@mui/material/Typography";
 import { Pin } from "../types/types";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import ColorRadioGroup from "./ColorRadioGroup";
+import CreateIcon from "@mui/icons-material/Create";
+import Divider from "@mui/material/Divider";
 
 type Anchor = "Menu";
 
@@ -39,8 +45,11 @@ export default function Drawser({
   setHighlight,
 }: DrawerProps) {
   const [menuOpen, setMenuOpen] = useState({ Menu: true });
-  const [currentTab, setCurrentTab] = useState<number>(1);
+  const [currentTab, setCurrentTab] = useState<number>(0);
   const [selectedPin, setSelectedPin] = useState<number>(0);
+
+  //Create Pin Template
+  const [labelName, setLabelName] = useState<string>("");
 
   const handleGridItemClick = (event: React.MouseEvent, index: number) => {
     event.preventDefault();
@@ -70,12 +79,12 @@ export default function Drawser({
       sx={{
         width: 400,
         height: "100vh",
-        // border: "1px solid red",
         position: "absolute",
         top: 0,
         right: 0,
-        color: "whitesmoke",
+        color: "black",
         fontSize: "1.2rem",
+        border: "1px solid black",
       }}
       role="presentation"
     >
@@ -103,6 +112,55 @@ export default function Drawser({
       */}
       {currentTab === 0 && (
         <>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              placeItems: "center",
+            }}
+          >
+            <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
+              Create Pin Template
+            </Typography>
+            <Typography sx={{ mt: 1, mb: 1 }} variant="body1" component="span">
+              Select Color:
+            </Typography>
+            <div
+              style={{
+                maxWidth: "12rem",
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gridTemplateRows: "auto",
+              }}
+            >
+              <ColorRadioGroup />
+            </div>
+            <TextField
+              label="Label Name"
+              value={labelName}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setLabelName(event.target.value);
+              }}
+              id="filled-start-adornment"
+              sx={{ m: 1, width: "25ch" }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LabelIcon />
+                  </InputAdornment>
+                ),
+              }}
+              variant="filled"
+            />
+            <Button
+              sx={{ color: "black" }}
+              variant="outlined"
+              startIcon={<CreateIcon />}
+            >
+              Create Pin
+            </Button>
+          </div>
+          <Divider variant="middle" />
           <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
             Available Pins
           </Typography>
@@ -192,7 +250,7 @@ export default function Drawser({
             position: "absolute",
             top: 0,
             right: 30,
-            color: "whitesmoke",
+            color: "black",
             fontSize: "1.2rem",
           }}
           onClick={toggleMenu("Menu", true)}
