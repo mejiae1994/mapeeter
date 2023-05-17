@@ -37,7 +37,7 @@ export default function useLocalStorage(
 
   function deleteItem(data: Pin): void {
     setMapPins((prevItems) =>
-      prevItems?.filter((item) => item.name != data.name)
+      prevItems?.filter((item) => item.pinId != data.pinId)
     );
   }
 

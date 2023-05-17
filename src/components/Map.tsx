@@ -59,7 +59,7 @@ export default function Map({
     let pin: Pin = {
       x: xCord,
       y: yCord,
-      name: pinName,
+      pinId: pinName,
       color: pinColor,
       countryName: country,
       positioning: "absolute",
@@ -95,9 +95,9 @@ export default function Map({
             top: pin.y,
             left: pin.x,
             color: pin.color,
-            backgroundColor: highlight === pin.name ? "grey" : "transparent",
-            opacity: highlight === pin.name ? 0.4 : 1,
-            borderRadius: highlight === pin.name ? "1rem" : "",
+            backgroundColor: highlight === pin.pinId ? "grey" : "transparent",
+            opacity: highlight === pin.pinId ? 0.4 : 1,
+            borderRadius: highlight === pin.pinId ? "1rem" : "",
           }}
         />
       </Draggable>

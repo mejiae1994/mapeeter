@@ -26,7 +26,7 @@ export default function FavoritePin({
   const mapPins = placedPin?.map((pin, index) => {
     return (
       <ListItem
-        onMouseOver={() => setHighlight(pin.name)}
+        onMouseOver={() => setHighlight(pin.pinId)}
         onMouseLeave={() => setHighlight("")}
         key={index}
         secondaryAction={

@@ -1,36 +1,27 @@
-import * as React from "react";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Avatar from "@mui/material/Avatar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import { red } from "@mui/material/colors";
 import Modal from "@mui/material/Modal";
-
+import { Pin } from "../types/types";
+import Comment from "./Comment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-type PinModalProps = {
-  user: string;
-  location: string;
-  timestamp: string | Date;
-  imgUrl: string;
-  comment: string;
-};
+interface PinModalProps {
+  open: true | false;
+  handleCloseModal: () => void;
+  pin: Pin | undefined;
+}
 
 export default function PinModal({
-  user,
-  location,
-  timestamp,
-  imgUrl,
-  comment,
+  open,
+  handleCloseModal,
+  pin,
 }: PinModalProps) {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const style = {
+  const style: any = {
     position: "absolute" as "absolute",
     top: "50%",
     left: "50%",
@@ -47,7 +38,7 @@ export default function PinModal({
   return (
     <Modal
       open={open}
-      onClose={handleClose}
+      onClose={handleCloseModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -64,8 +55,8 @@ export default function PinModal({
                 <MoreVertIcon />
               </IconButton>
             }
-            title="Bogota, Colombia"
-            subheader="September 14, 2016"
+            title={pin?.countryName}
+            subheader={pin?.timestamp}
           />
           <CardMedia
             component="img"
@@ -73,12 +64,24 @@ export default function PinModal({
             image="https://images.pexels.com/photos/8264573/pexels-photo-8264573.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
             alt="Bogota, Colombia"
           />
-          <CardContent>
-            <Typography variant="body2" color="text.secondary">
-              This impressive paella is a perfect party dish and a fun meal to
-              cook together with your guests. Add 1 cup of frozen peas along
-              with the mussels, if you like.
-            </Typography>
+          {/* comment goes here */}
+          <CardContent
+            sx={{
+              "&:last-child": {
+                padding: ".5rem",
+              },
+              "&&": {
+                padding: ".5rem", // Additional selector with double ampersand
+              },
+            }}
+          >
+            <Comment
+              comment={
+                pin?.comment
+                  ? pin.comment
+                  : "No comment, add a comment by clicking the vertical icon. No comment, add a comment by clicking the vertical icon. No comment, add a comment by clicking the vertical icon"
+              }
+            />
           </CardContent>
         </Card>
       </div>
