@@ -221,6 +221,7 @@ export default function SvgMap({
   return (
     <>
       <ReactSVGPanZoom
+        customMiniature={() => <></>}
         detectAutoPan={false}
         SVGBackground="rgb(78, 164, 222)"
         style={{

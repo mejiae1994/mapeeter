@@ -117,6 +117,7 @@ export default function Drawser({
               display: "flex",
               flexDirection: "column",
               placeItems: "center",
+              marginBottom: "1rem",
             }}
           >
             <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
@@ -161,8 +162,9 @@ export default function Drawser({
             </Button>
           </div>
           <Divider variant="middle" />
+          {/* pin templates */}
           <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
-            Available Pins
+            Your Pin Templates
           </Typography>
           <Grid container columns={8}>
             <Grid

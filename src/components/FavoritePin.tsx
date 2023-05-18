@@ -67,7 +67,7 @@ export default function FavoritePin({
   return (
     <>
       <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
-        Your Pins
+        Your Placed Pins
       </Typography>
       <Grid item xs={12} md={6}>
         <List dense={true}>
