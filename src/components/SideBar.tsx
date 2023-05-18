@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
@@ -11,12 +10,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import LabelIcon from "@mui/icons-material/Label";
 import FavoritePin from "./FavoritePin";
 import Typography from "@mui/material/Typography";
-import { Pin } from "../types/types";
+import { Pin, PinTemplate } from "../types/types";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import ColorRadioGroup from "./ColorRadioGroup";
 import CreateIcon from "@mui/icons-material/Create";
 import Divider from "@mui/material/Divider";
+import PinTemplateContainer from "./PinTemplateContainer";
 
 type Anchor = "Menu";
 
@@ -50,6 +50,24 @@ export default function Drawser({
 
   //Create Pin Template
   const [labelName, setLabelName] = useState<string>("");
+  const [selectedColor, setSelectedColor] = React.useState("red");
+
+  //pin templates
+  //load state from localstorage
+  const [pinTemplate, setPinTemplate] = useState<PinTemplate[] | []>([]);
+
+  function handleCreatePinTemplate(event: React.MouseEvent) {
+    event.preventDefault();
+
+    let newPinTemplate: PinTemplate = {
+      color: selectedColor,
+      label: labelName,
+    };
+
+    setPinTemplate([...pinTemplate, newPinTemplate]);
+    console.log(labelName, selectedColor);
+    setLabelName("");
+  }
 
   const handleGridItemClick = (event: React.MouseEvent, index: number) => {
     event.preventDefault();
@@ -85,6 +103,7 @@ export default function Drawser({
         color: "black",
         fontSize: "1.2rem",
         border: "1px solid black",
+        backgroundColor: "whitesmoke",
       }}
       role="presentation"
     >
@@ -103,13 +122,7 @@ export default function Drawser({
           aria-label="Close"
         />
       </Tabs>
-      {/* 
-        click on pin
-        onclick start event to create pin with location of mouse
-        dragable, on drag event, move the pin location
-        add pins to array
-        render all pins of that array at specific locations
-      */}
+
       {currentTab === 0 && (
         <>
           <div
@@ -134,7 +147,11 @@ export default function Drawser({
                 gridTemplateRows: "auto",
               }}
             >
-              <ColorRadioGroup />
+              <ColorRadioGroup
+                pinColors={pinColors}
+                selectedColor={selectedColor}
+                selectColor={(color: string) => setSelectedColor(color)}
+              />
             </div>
             <TextField
               label="Label Name"
@@ -157,6 +174,7 @@ export default function Drawser({
               sx={{ color: "black" }}
               variant="outlined"
               startIcon={<CreateIcon />}
+              onClick={handleCreatePinTemplate}
             >
               Create Pin
             </Button>
@@ -166,72 +184,7 @@ export default function Drawser({
           <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
             Your Pin Templates
           </Typography>
-          <Grid container columns={8}>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 0)}
-              item
-              xs={2}
-              className={selectedPin === 0 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "red" }} />
-            </Grid>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 1)}
-              item
-              xs={2}
-              className={selectedPin === 1 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "green" }} />
-            </Grid>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 2)}
-              item
-              xs={2}
-              className={selectedPin === 2 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "yellow" }} />
-            </Grid>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 3)}
-              item
-              xs={2}
-              className={selectedPin === 3 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "blue" }} />
-            </Grid>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 4)}
-              item
-              xs={2}
-              className={selectedPin === 4 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "purple" }} />
-            </Grid>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 5)}
-              item
-              xs={2}
-              className={selectedPin === 5 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "black" }} />
-            </Grid>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 6)}
-              item
-              xs={2}
-              className={selectedPin === 6 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "orange" }} />
-            </Grid>
-            <Grid
-              onClick={(e) => handleGridItemClick(e, 7)}
-              item
-              xs={2}
-              className={selectedPin === 7 ? "selected" : ""}
-            >
-              <PlaceOutlinedIcon sx={{ color: "orangered" }} />
-            </Grid>
-          </Grid>
+          <PinTemplateContainer pinTemplates={pinTemplate} />
         </>
       )}
       {currentTab === 1 && (
@@ -244,6 +197,7 @@ export default function Drawser({
     </Box>
   );
 
+  console.log("pin template", pinTemplate);
   return (
     <>
       {!menuOpen["Menu"] && (

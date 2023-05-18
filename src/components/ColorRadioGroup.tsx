@@ -1,30 +1,23 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 
-export default function ColorRadioGroup() {
-  const [selectedColor, setSelectedValue] = React.useState("red");
+interface ColorRadioGroupProps {
+  pinColors: string[];
+  selectedColor: string;
+  selectColor: (color: string) => void;
+}
 
-  const pinColors = [
-    "red",
-    "green",
-    "yellow",
-    "blue",
-    "purple",
-    "black",
-    "orange",
-    "orangered",
-  ];
-
-  console.log(selectedColor);
+export default function ColorRadioGroup({
+  pinColors,
+  selectedColor,
+  selectColor,
+}: ColorRadioGroupProps) {
   return (
     <>
       {pinColors.map((color) => {
         return (
           <Box
             aria-label={color}
-            onClick={() => {
-              setSelectedValue(color);
-            }}
+            onClick={() => selectColor(color)}
             key={color}
             sx={{
               display: "inline-flex",
@@ -32,7 +25,7 @@ export default function ColorRadioGroup() {
               height: "3rem",
               boxSizing: "border-box",
               backgroundColor: color,
-              border: selectedColor === color ? "1px solid white" : "",
+              border: selectedColor === color ? "2px solid white" : "",
               opacity: selectedColor === color ? [0.9] : "",
               cursor: "pointer",
             }}

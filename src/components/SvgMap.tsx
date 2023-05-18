@@ -31,6 +31,7 @@ export default function SvgMap({
 }: MapProps) {
   const [hover, setHover] = useState<Position>({ x: 0, y: 0 });
   const [currentCountry, setCurrentCountry] = useState<string>("");
+
   //react-svg-pan-zoom
   const Viewer = useRef(null);
   const [transform, setTransform] = useState(null);
@@ -286,6 +287,7 @@ export default function SvgMap({
         }}
         variant="outlined"
         onClick={() => {
+          //@ts-ignore
           Viewer.current.reset();
         }}
       >

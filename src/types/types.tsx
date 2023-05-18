@@ -10,3 +10,8 @@ export type Pin = {
   imgUrl?: string;
   comment?: string;
 };
+
+export type PinTemplate = {
+  color: string;
+  label: string;
+};
