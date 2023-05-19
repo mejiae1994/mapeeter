@@ -38,7 +38,6 @@ export default function Map({
     setHover({ ...hover, x: clientX, y: clientY });
     let countryName: string | null = pathName || pathClass;
     setCurrentCountry(countryName as string);
-    // console.log(pathName || pathClass);
   }
 
   function handleCreatePin(

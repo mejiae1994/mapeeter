@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -12,29 +12,29 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 
 //change any to function for deletePin
-interface PinTemplateProps {
+type PinTemplateProps = {
   pinTemplates: PinTemplate[] | [];
-  deletePin?: any;
+  deletePinTemplate?: any;
   setCurrentPinTemplate: any;
-}
+  selectedPinTemplate: any;
+};
 
 export default function PinTemplateContainer({
   pinTemplates,
-  deletePin,
+  deletePinTemplate,
   setCurrentPinTemplate,
+  selectedPinTemplate,
 }: PinTemplateProps) {
-  const [selectedRow, setSelectedRow] = useState<number | undefined>(undefined);
-
   const mapPins = pinTemplates?.map((pin, index) => {
     return (
       <div key={index}>
         <ListItem
           onClick={() => {
-            setSelectedRow(index);
             setCurrentPinTemplate(pin);
           }}
           sx={{
-            backgroundColor: selectedRow === index ? "#ffdf" : "",
+            backgroundColor:
+              selectedPinTemplate?.label === pin.label ? "#ffdf" : "",
             cursor: "pointer",
           }}
           secondaryAction={
@@ -42,7 +42,8 @@ export default function PinTemplateContainer({
               edge="end"
               aria-label="delete"
               onClick={(e: React.MouseEvent) => {
-                deletePin(e, pin);
+                e.stopPropagation();
+                deletePinTemplate(e, pin);
               }}
             >
               <DeleteIcon />

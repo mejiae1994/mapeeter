@@ -4,18 +4,20 @@ import { Button } from "@mui/material";
 import { Pin, PinTemplate } from "../types/types";
 import { INITIAL_VALUE, ReactSVGPanZoom, TOOL_AUTO } from "react-svg-pan-zoom";
 import PinModal from "./PinModal";
+import Popup from "./Popup";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 type Position = {
   x: number;
   y: number;
 };
 
-interface MapProps {
-  pinTemplate: PinTemplate | undefined;
+type MapProps = {
+  selectedPinTemplate: PinTemplate | undefined;
   setMapPin: (pin: Pin) => void;
   placedPin: Pin[] | undefined;
   highlight: string;
-}
+};
 
 //@ts-ignore
 function precisionRound(number, precision) {
@@ -24,13 +26,14 @@ function precisionRound(number, precision) {
 }
 
 export default function SvgMap({
-  pinTemplate,
+  selectedPinTemplate,
   setMapPin,
   placedPin,
   highlight,
 }: MapProps) {
   const [hover, setHover] = useState<Position>({ x: 0, y: 0 });
   const [currentCountry, setCurrentCountry] = useState<string>("");
+  const [popup, setPopup] = useState(false);
 
   //react-svg-pan-zoom
   const Viewer = useRef(null);
@@ -56,6 +59,18 @@ export default function SvgMap({
     //@ts-ignore
     Viewer?.current?.fitToViewer();
   }, []);
+
+  //popup in and out
+  useEffect(() => {
+    if (!popup) return;
+    const timer = setTimeout(() => {
+      setPopup(false);
+    }, 1200);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [popup]);
 
   //set max zoom in/out
   const lockToBoundaries = (v: any) => {
@@ -95,7 +110,6 @@ export default function SvgMap({
     setHover({ ...hover, x: clientX, y: clientY });
     let countryName: string | null = pathName || pathClass;
     setCurrentCountry(countryName as string);
-    // console.log(pathName || pathClass);
   }
 
   function getTransformedPoint(x: number, y: number) {
@@ -124,7 +138,8 @@ export default function SvgMap({
   ): void {
     // if (panning) return;
     e.stopPropagation();
-    if (!pinTemplate) {
+    if (!selectedPinTemplate) {
+      setPopup(true);
       return;
     }
 
@@ -138,7 +153,7 @@ export default function SvgMap({
       x: coord.x - 12,
       y: coord.y - 12,
       pinId: pinName,
-      color: pinTemplate.color,
+      color: selectedPinTemplate.color,
       countryName: country,
       positioning: "absolute",
       timestamp: getCurrentDate(),
@@ -293,6 +308,13 @@ export default function SvgMap({
       >
         Reset View
       </Button>
+
+      {/* show popup for x seconds */}
+      {popup && (
+        <Popup message="Select Template">
+          <CancelIcon sx={{ color: "red" }} />
+        </Popup>
+      )}
       {currentCountry && (
         <h2
           style={{

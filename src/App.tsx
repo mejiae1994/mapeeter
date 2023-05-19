@@ -17,23 +17,28 @@ function App() {
   };
 
   console.log(
-    `${currentPinTemplate ? currentPinTemplate : "there are not templates"}`
+    `${
+      currentPinTemplate
+        ? `the template is not empty: ${currentPinTemplate}`
+        : "there are not templates"
+    }`
   );
   return (
     <div className="App">
       <SvgMap
         highlight={highlightedPin}
-        pinTemplate={currentPinTemplate}
+        selectedPinTemplate={currentPinTemplate}
         setMapPin={(pin: Pin) => setPins(pin)}
         placedPin={pins}
       />
       <Drawer
         setHighlight={setHighlightedPin}
-        setTemplate={(template: PinTemplate) => {
+        setCurrentTemplate={(template: PinTemplate | undefined) => {
           setCurrentPinTemplate(template);
         }}
         placedPin={pins}
         handleDeletePin={handleDeletePin}
+        selectedPinTemplate={currentPinTemplate}
       />
     </div>
   );

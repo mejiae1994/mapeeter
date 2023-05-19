@@ -15,8 +15,10 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import ColorRadioGroup from "./ColorRadioGroup";
 import CreateIcon from "@mui/icons-material/Create";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Divider from "@mui/material/Divider";
 import PinTemplateContainer from "./PinTemplateContainer";
+import Popup from "./Popup";
 
 type Anchor = "Menu";
 
@@ -32,17 +34,19 @@ const pinColors = [
 ];
 
 interface DrawerProps {
-  setTemplate: (template: PinTemplate) => void;
+  setCurrentTemplate: (template: PinTemplate | undefined) => void;
   placedPin: Pin[] | [];
   handleDeletePin: any;
   setHighlight: any;
+  selectedPinTemplate: any;
 }
 
 export default function Drawser({
-  setTemplate,
+  setCurrentTemplate,
   placedPin,
   handleDeletePin,
   setHighlight,
+  selectedPinTemplate,
 }: DrawerProps) {
   const [menuOpen, setMenuOpen] = useState({ Menu: true });
   const [currentTab, setCurrentTab] = useState<number>(0);
@@ -50,6 +54,7 @@ export default function Drawser({
   //Create Pin Template
   const [labelName, setLabelName] = useState<string>("");
   const [selectedColor, setSelectedColor] = React.useState("red");
+  const [popup, setPopup] = useState(false);
 
   //pin templates
   //load state from localstorage
@@ -65,11 +70,23 @@ export default function Drawser({
 
     setPinTemplate([...pinTemplate, newPinTemplate]);
     setLabelName("");
+    setPopup(true);
   }
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
   };
+
+  useEffect(() => {
+    if (!popup) return;
+    const timer = setTimeout(() => {
+      setPopup(false);
+    }, 1200);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [popup]);
 
   const toggleMenu =
     (anchor: Anchor, open: boolean) =>
@@ -79,6 +96,17 @@ export default function Drawser({
 
   //create pin if currentpintab is not null and left click over a path occurs
   //lift state up and make sure it only creates when clicked on paths
+  const deleteTemplate = (e: React.MouseEvent, pinToDelete: PinTemplate) => {
+    if (
+      selectedPinTemplate.label === pinToDelete.label ||
+      pinTemplate.length === 1
+    ) {
+      setCurrentTemplate(undefined);
+    }
+    setPinTemplate((previous) => {
+      return previous.filter((template) => template.label != pinToDelete.label);
+    });
+  };
 
   // content that gets rendered when menu opens
   const list = (anchor: Anchor) => (
@@ -174,8 +202,10 @@ export default function Drawser({
             Your Pin Templates
           </Typography>
           <PinTemplateContainer
+            deletePinTemplate={deleteTemplate}
             pinTemplates={pinTemplate}
-            setCurrentPinTemplate={setTemplate}
+            setCurrentPinTemplate={setCurrentTemplate}
+            selectedPinTemplate={selectedPinTemplate}
           />
         </>
       )}
@@ -206,6 +236,11 @@ export default function Drawser({
         </Button>
       )}
       {menuOpen["Menu"] && list("Menu")}
+      {popup && (
+        <Popup message="Template Created">
+          <CheckCircleIcon sx={{ color: "green" }} />
+        </Popup>
+      )}
     </>
   );
 }

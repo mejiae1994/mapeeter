@@ -20,7 +20,6 @@ export default function useLocalStorage(
 
   //keep localstorage in sync
   useEffect((): void => {
-    console.log("second use effect");
     if (mapPins && mapPins.length >= 0) {
       localStorage.setItem(itemKey, JSON.stringify(mapPins));
     }

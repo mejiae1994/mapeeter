@@ -12,11 +12,11 @@ import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import { Pin } from "../types/types";
 
 //change any to function for deletePin
-interface FavoritePinProps {
+type FavoritePinProps = {
   placedPin: Pin[] | [];
   deletePin: any;
   setHighlight: any;
-}
+};
 
 export default function FavoritePin({
   placedPin,
