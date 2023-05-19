@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import paths from "../assets/path.json";
 import { Button } from "@mui/material";
-import { Pin } from "../types/types";
+import { Pin, PinTemplate } from "../types/types";
 import { INITIAL_VALUE, ReactSVGPanZoom, TOOL_AUTO } from "react-svg-pan-zoom";
 import PinModal from "./PinModal";
 
@@ -11,7 +11,7 @@ type Position = {
 };
 
 interface MapProps {
-  pinColor: string;
+  pinTemplate: PinTemplate | undefined;
   setMapPin: (pin: Pin) => void;
   placedPin: Pin[] | undefined;
   highlight: string;
@@ -24,7 +24,7 @@ function precisionRound(number, precision) {
 }
 
 export default function SvgMap({
-  pinColor,
+  pinTemplate,
   setMapPin,
   placedPin,
   highlight,
@@ -124,7 +124,7 @@ export default function SvgMap({
   ): void {
     // if (panning) return;
     e.stopPropagation();
-    if (!pinColor) {
+    if (!pinTemplate) {
       return;
     }
 
@@ -138,7 +138,7 @@ export default function SvgMap({
       x: coord.x - 12,
       y: coord.y - 12,
       pinId: pinName,
-      color: pinColor,
+      color: pinTemplate.color,
       countryName: country,
       positioning: "absolute",
       timestamp: getCurrentDate(),

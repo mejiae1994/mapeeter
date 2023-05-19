@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import "./App.css";
-import Map from "./components/Map";
 import SvgMap from "./components/SvgMap";
 import Drawer from "./components/SideBar";
 import useLocalStorage from "./hooks/useLocalStorageHook";
-import { Pin } from "./types/types";
+import { Pin, PinTemplate } from "./types/types";
 
 function App() {
-  const [currentPinColor, setCurrentPinColor] = useState<string>("");
+  const [currentPinTemplate, setCurrentPinTemplate] = useState<
+    PinTemplate | undefined
+  >(undefined);
   const [pins, setPins, deletePins] = useLocalStorage("pins");
   const [highlightedPin, setHighlightedPin] = useState("");
 
@@ -15,18 +16,21 @@ function App() {
     deletePins(pinToDelete);
   };
 
+  console.log(
+    `${currentPinTemplate ? currentPinTemplate : "there are not templates"}`
+  );
   return (
     <div className="App">
       <SvgMap
         highlight={highlightedPin}
-        pinColor={currentPinColor}
+        pinTemplate={currentPinTemplate}
         setMapPin={(pin: Pin) => setPins(pin)}
         placedPin={pins}
       />
       <Drawer
         setHighlight={setHighlightedPin}
-        setPinColor={(color: string) => {
-          setCurrentPinColor(color);
+        setTemplate={(template: PinTemplate) => {
+          setCurrentPinTemplate(template);
         }}
         placedPin={pins}
         handleDeletePin={handleDeletePin}

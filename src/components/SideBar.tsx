@@ -32,21 +32,20 @@ const pinColors = [
 ];
 
 interface DrawerProps {
-  setPinColor: (color: string) => void;
+  setTemplate: (template: PinTemplate) => void;
   placedPin: Pin[] | [];
   handleDeletePin: any;
   setHighlight: any;
 }
 
 export default function Drawser({
-  setPinColor,
+  setTemplate,
   placedPin,
   handleDeletePin,
   setHighlight,
 }: DrawerProps) {
   const [menuOpen, setMenuOpen] = useState({ Menu: true });
   const [currentTab, setCurrentTab] = useState<number>(0);
-  const [selectedPin, setSelectedPin] = useState<number>(0);
 
   //Create Pin Template
   const [labelName, setLabelName] = useState<string>("");
@@ -65,18 +64,8 @@ export default function Drawser({
     };
 
     setPinTemplate([...pinTemplate, newPinTemplate]);
-    console.log(labelName, selectedColor);
     setLabelName("");
   }
-
-  const handleGridItemClick = (event: React.MouseEvent, index: number) => {
-    event.preventDefault();
-    setSelectedPin(index);
-  };
-
-  useEffect(() => {
-    setPinColor(pinColors[selectedPin]);
-  }, [selectedPin]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue);
@@ -184,7 +173,10 @@ export default function Drawser({
           <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
             Your Pin Templates
           </Typography>
-          <PinTemplateContainer pinTemplates={pinTemplate} />
+          <PinTemplateContainer
+            pinTemplates={pinTemplate}
+            setCurrentPinTemplate={setTemplate}
+          />
         </>
       )}
       {currentTab === 1 && (
@@ -197,7 +189,6 @@ export default function Drawser({
     </Box>
   );
 
-  console.log("pin template", pinTemplate);
   return (
     <>
       {!menuOpen["Menu"] && (

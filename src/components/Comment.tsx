@@ -11,7 +11,6 @@ export default function Comment({ comment }: CommentProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [commentText, setCommentText] = useState<string>(comment);
 
-  console.log(commentText);
   return (
     <>
       {isEditing ? (
