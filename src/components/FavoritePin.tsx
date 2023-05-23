@@ -69,8 +69,14 @@ export default function FavoritePin({
       <Typography sx={{ mt: 1, mb: 1 }} variant="h6" component="div">
         Your Placed Pins
       </Typography>
-      <Grid item xs={12} md={6}>
-        <List dense={true}>
+      <Grid item xs={12} md={6} sx={{ height: "100%" }}>
+        <List
+          sx={{
+            overflowY: "auto",
+            height: "90%",
+          }}
+          dense={true}
+        >
           {mapPins.length > 0 ? mapPins : <h5>No Placed Pins</h5>}
         </List>
       </Grid>

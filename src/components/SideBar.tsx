@@ -19,6 +19,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Divider from "@mui/material/Divider";
 import PinTemplateContainer from "./PinTemplateContainer";
 import Popup from "./Popup";
+import useLocalStorage from "../hooks/useLocalStorageHook";
 
 type Anchor = "Menu";
 
@@ -55,21 +56,33 @@ export default function Drawser({
   const [labelName, setLabelName] = useState<string>("");
   const [selectedColor, setSelectedColor] = React.useState("red");
   const [popup, setPopup] = useState(false);
+  const [popupMessage, setPopupMessaage] = useState("");
+  const [popupColor, setPopupColor] = useState("");
 
   //pin templates
   //load state from localstorage
-  const [pinTemplate, setPinTemplate] = useState<PinTemplate[] | []>([]);
+  const [thePinTemplates, setThePinTemplates, deleteThePinTemplates] =
+    useLocalStorage<PinTemplate>("templates");
 
   function handleCreatePinTemplate(event: React.MouseEvent) {
     event.preventDefault();
 
+    if (!labelName) {
+      setPopupMessaage("Empty Label Name");
+      setPopupColor("red");
+      setPopup(true);
+      return;
+    }
     let newPinTemplate: PinTemplate = {
       color: selectedColor,
       label: labelName,
     };
 
-    setPinTemplate([...pinTemplate, newPinTemplate]);
+    // setPinTemplate([...pinTemplate, newPinTemplate]);
+    setThePinTemplates(newPinTemplate);
     setLabelName("");
+    setPopupMessaage("Template Created");
+    setPopupColor("green");
     setPopup(true);
   }
 
@@ -98,14 +111,12 @@ export default function Drawser({
   //lift state up and make sure it only creates when clicked on paths
   const deleteTemplate = (e: React.MouseEvent, pinToDelete: PinTemplate) => {
     if (
-      selectedPinTemplate.label === pinToDelete.label ||
-      pinTemplate.length === 1
+      selectedPinTemplate?.label === pinToDelete.label ||
+      thePinTemplates.length === 1
     ) {
       setCurrentTemplate(undefined);
     }
-    setPinTemplate((previous) => {
-      return previous.filter((template) => template.label != pinToDelete.label);
-    });
+    deleteThePinTemplates(pinToDelete);
   };
 
   // content that gets rendered when menu opens
@@ -203,7 +214,7 @@ export default function Drawser({
           </Typography>
           <PinTemplateContainer
             deletePinTemplate={deleteTemplate}
-            pinTemplates={pinTemplate}
+            pinTemplates={thePinTemplates}
             setCurrentPinTemplate={setCurrentTemplate}
             selectedPinTemplate={selectedPinTemplate}
           />
@@ -237,8 +248,8 @@ export default function Drawser({
       )}
       {menuOpen["Menu"] && list("Menu")}
       {popup && (
-        <Popup message="Template Created">
-          <CheckCircleIcon sx={{ color: "green" }} />
+        <Popup message={popupMessage}>
+          <CheckCircleIcon sx={{ color: popupColor }} />
         </Popup>
       )}
     </>

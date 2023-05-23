@@ -1,45 +1,54 @@
 import { useEffect, useState } from "react";
-import { Pin } from "../types/types";
+import { Pin, PinTemplate } from "../types/types";
 
-type localStorageReturnType = [
-  Pin[] | [],
-  (data: Pin) => void,
-  (data: Pin) => void
+type localStorageReturnType<T> = [
+  T[] | [],
+  (data: T) => void,
+  (data: T) => void
 ];
 
-//what do I want this function to do
-//will return mapPins if there are any stored in local storage
-//will update the mapPins object in localstorage
-export default function useLocalStorage(
+export default function useLocalStorage<T>(
   itemKey: string
-): localStorageReturnType {
-  const [mapPins, setMapPins] = useState<Pin[] | []>(() => {
+): localStorageReturnType<T> {
+  const [mapPins, setMapPins] = useState<T[] | []>(() => {
     let storage: string | null = localStorage.getItem(itemKey || "");
     return storage ? JSON.parse(storage) : [];
   });
 
-  //keep localstorage in sync
-  useEffect((): void => {
+  useEffect(() => {
     if (mapPins && mapPins.length >= 0) {
       localStorage.setItem(itemKey, JSON.stringify(mapPins));
     }
-  }, [mapPins]);
+  }, [mapPins, itemKey]);
 
-  //store new items
-  //for now store the mapPins
-  //does the storage already contain information
-  function storeItem(data: Pin): void {
-    let newPinArray: Pin[] = mapPins ? [...mapPins, data] : [data];
+  function storeItem(data: T): void {
+    let newPinArray: T[] = mapPins ? [...mapPins, data] : [data];
     setMapPins(newPinArray);
     localStorage.setItem(itemKey, JSON.stringify(newPinArray));
   }
 
-  function deleteItem(data: Pin): void {
-    setMapPins((prevItems) =>
-      prevItems?.filter((item) => item.pinId != data.pinId)
-    );
+  function deleteItem(data: T): void {
+    if (isPin(data)) {
+      setMapPins((prevItems) =>
+        prevItems?.filter((item) => isPin(item) && item?.pinId !== data?.pinId)
+      );
+    }
+    if (isPinTemplate(data)) {
+      setMapPins((prevItems) =>
+        prevItems?.filter(
+          (item) => isPinTemplate(item) && item?.label !== data?.label
+        )
+      );
+    }
   }
 
-  //custom hook returns the data
+  function isPin(obj: any): obj is Pin {
+    return obj && typeof obj.pinId === "string";
+  }
+
+  function isPinTemplate(obj: any): obj is PinTemplate {
+    return obj && typeof obj.label === "string";
+  }
+
   return [mapPins, storeItem, deleteItem];
 }

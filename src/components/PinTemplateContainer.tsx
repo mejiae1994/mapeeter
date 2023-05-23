@@ -1,15 +1,13 @@
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React from "react";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PlaceOutlinedIcon from "@mui/icons-material/PlaceOutlined";
 import { PinTemplate } from "../types/types";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
+import ListItemButton from "@mui/material/ListItemButton";
 
 //change any to function for deletePin
 type PinTemplateProps = {
@@ -28,31 +26,24 @@ export default function PinTemplateContainer({
   const mapPins = pinTemplates?.map((pin, index) => {
     return (
       <div key={index}>
-        <ListItem
+        <ListItemButton
           onClick={() => {
             setCurrentPinTemplate(pin);
           }}
-          sx={{
-            backgroundColor:
-              selectedPinTemplate?.label === pin.label ? "#ffdf" : "",
-            cursor: "pointer",
-          }}
-          secondaryAction={
-            <IconButton
-              edge="end"
-              aria-label="delete"
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                deletePinTemplate(e, pin);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          }
+          selected={selectedPinTemplate?.label === pin.label}
         >
           <ListItemIcon>{createPin(pin)}</ListItemIcon>
           <ListItemText sx={{ color: "black" }} primary={pin.label} />
-        </ListItem>
+          <ListItemIcon
+            aria-label="delete"
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              deletePinTemplate(e, pin);
+            }}
+          >
+            <DeleteIcon />
+          </ListItemIcon>
+        </ListItemButton>
         <Divider variant="middle" />
       </div>
     );

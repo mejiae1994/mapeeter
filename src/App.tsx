@@ -9,7 +9,7 @@ function App() {
   const [currentPinTemplate, setCurrentPinTemplate] = useState<
     PinTemplate | undefined
   >(undefined);
-  const [pins, setPins, deletePins] = useLocalStorage("pins");
+  const [pins, setPins, deletePins] = useLocalStorage<Pin>("pins");
   const [highlightedPin, setHighlightedPin] = useState("");
 
   const handleDeletePin = (e: React.MouseEvent, pinToDelete: Pin) => {
