@@ -9,12 +9,12 @@ type Position = {
   y: number;
 };
 
-interface MapProps {
+type MapProps = {
   pinColor: string;
   setMapPin: (pin: Pin) => void;
   placedPin: Pin[] | undefined;
   highlight: string;
-}
+};
 
 export default function Map({
   pinColor,

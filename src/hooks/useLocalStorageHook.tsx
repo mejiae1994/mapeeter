@@ -42,10 +42,12 @@ export default function useLocalStorage<T>(
     }
   }
 
+  //type predicates to check for Pin type
   function isPin(obj: any): obj is Pin {
     return obj && typeof obj.pinId === "string";
   }
 
+  //type predicates to check for PinTemplate type
   function isPinTemplate(obj: any): obj is PinTemplate {
     return obj && typeof obj.label === "string";
   }

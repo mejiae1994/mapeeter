@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-type Popup = {
+type PopupProps = {
   message: string;
   children: JSX.Element;
 };
@@ -20,7 +20,7 @@ const style = {
   backgroundColor: "whitesmoke",
 };
 
-export default function Popup({ message, children }: Popup) {
+export default function Popup({ message, children }: PopupProps) {
   return (
     <Box sx={style}>
       {children}

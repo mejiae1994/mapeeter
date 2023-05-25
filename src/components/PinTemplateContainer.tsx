@@ -12,9 +12,9 @@ import ListItemButton from "@mui/material/ListItemButton";
 //change any to function for deletePin
 type PinTemplateProps = {
   pinTemplates: PinTemplate[] | [];
-  deletePinTemplate?: any;
-  setCurrentPinTemplate: any;
-  selectedPinTemplate: any;
+  deletePinTemplate: (e: React.MouseEvent, template: PinTemplate) => void;
+  setCurrentPinTemplate: (template: PinTemplate | undefined) => void;
+  selectedPinTemplate: PinTemplate | undefined;
 };
 
 export default function PinTemplateContainer({

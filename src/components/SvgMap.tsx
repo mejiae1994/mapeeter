@@ -1,16 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import paths from "../assets/path.json";
 import { Button } from "@mui/material";
-import { Pin, PinTemplate } from "../types/types";
+import { Pin, PinTemplate, Position } from "../types/types";
 import { INITIAL_VALUE, ReactSVGPanZoom, TOOL_AUTO } from "react-svg-pan-zoom";
 import PinModal from "./PinModal";
 import Popup from "./Popup";
 import CancelIcon from "@mui/icons-material/Cancel";
-
-type Position = {
-  x: number;
-  y: number;
-};
 
 type MapProps = {
   selectedPinTemplate: PinTemplate | undefined;

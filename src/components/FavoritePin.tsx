@@ -13,17 +13,17 @@ import { Pin } from "../types/types";
 
 //change any to function for deletePin
 type FavoritePinProps = {
-  placedPin: Pin[] | [];
-  deletePin: any;
-  setHighlight: any;
+  placedPins: Pin[] | [];
+  deletePin: (e: React.MouseEvent, pin: Pin) => void;
+  setHighlight: (highlightedPin: string) => void;
 };
 
 export default function FavoritePin({
-  placedPin,
+  placedPins,
   deletePin,
   setHighlight,
 }: FavoritePinProps) {
-  const mapPins = placedPin?.map((pin, index) => {
+  const mapPins = placedPins?.map((pin, index) => {
     return (
       <ListItem
         onMouseOver={() => setHighlight(pin.pinId)}

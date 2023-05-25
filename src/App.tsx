@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import SvgMap from "./components/SvgMap";
-import Drawer from "./components/SideBar";
+import Sidebar from "./components/SideBar";
 import useLocalStorage from "./hooks/useLocalStorageHook";
 import { Pin, PinTemplate } from "./types/types";
 
@@ -31,12 +31,12 @@ function App() {
         setMapPin={(pin: Pin) => setPins(pin)}
         placedPin={pins}
       />
-      <Drawer
+      <Sidebar
         setHighlight={setHighlightedPin}
         setCurrentTemplate={(template: PinTemplate | undefined) => {
           setCurrentPinTemplate(template);
         }}
-        placedPin={pins}
+        placedPins={pins}
         handleDeletePin={handleDeletePin}
         selectedPinTemplate={currentPinTemplate}
       />

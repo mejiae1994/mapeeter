@@ -34,21 +34,21 @@ const pinColors = [
   "orangered",
 ];
 
-interface DrawerProps {
+type SidebarProps = {
   setCurrentTemplate: (template: PinTemplate | undefined) => void;
-  placedPin: Pin[] | [];
-  handleDeletePin: any;
-  setHighlight: any;
-  selectedPinTemplate: any;
-}
+  placedPins: Pin[] | [];
+  handleDeletePin: (e: React.MouseEvent, pin: Pin) => void;
+  setHighlight: (highlightedPin: string) => void;
+  selectedPinTemplate: PinTemplate | undefined;
+};
 
-export default function Drawser({
+export default function Sidebar({
   setCurrentTemplate,
-  placedPin,
+  placedPins,
   handleDeletePin,
   setHighlight,
   selectedPinTemplate,
-}: DrawerProps) {
+}: SidebarProps) {
   const [menuOpen, setMenuOpen] = useState({ Menu: true });
   const [currentTab, setCurrentTab] = useState<number>(0);
 
@@ -222,7 +222,7 @@ export default function Drawser({
       )}
       {currentTab === 1 && (
         <FavoritePin
-          placedPin={placedPin}
+          placedPins={placedPins}
           deletePin={handleDeletePin}
           setHighlight={setHighlight}
         />

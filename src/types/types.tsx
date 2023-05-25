@@ -15,3 +15,8 @@ export type PinTemplate = {
   color: string;
   label: string;
 };
+
+export type Position = {
+  x: number;
+  y: number;
+};
