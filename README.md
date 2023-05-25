@@ -36,3 +36,7 @@ The Mapeeter application is built using the following technologies:
   - Express (web application framework for Node.js)
   - PostgreSQL (database for storing user data)
   - Supabase (open-source Firebase alternative with real-time data syncing)
+
+## WIP Images
+
+![Mapeeter main page preview](./src/assets/wipimage.PNG)
