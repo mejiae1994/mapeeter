@@ -3,12 +3,12 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Avatar from "@mui/material/Avatar";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import { red } from "@mui/material/colors";
 import Modal from "@mui/material/Modal";
 import { Pin } from "../types/types";
 import Comment from "./Comment";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { useState } from "react";
+import PinUserModal from "./PinUserModal";
 
 interface PinModalProps {
   open: true | false;
@@ -21,6 +21,8 @@ export default function PinModal({
   handleCloseModal,
   pin,
 }: PinModalProps) {
+  const [childOpen, setChildOpen] = useState(false);
+
   const style: any = {
     position: "absolute" as "absolute",
     top: "50%",
@@ -28,7 +30,6 @@ export default function PinModal({
     transform: "translate(-50%, -50%)",
     width: 300,
     bgcolor: "background.paper",
-    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
     display: "flex",
@@ -46,14 +47,13 @@ export default function PinModal({
         <Card sx={{ maxWidth: 345 }}>
           <CardHeader
             avatar={
-              <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+              <Avatar
+                onClick={() => setChildOpen(!childOpen)}
+                sx={{ bgcolor: red[500], cursor: "pointer" }}
+                aria-label="recipe"
+              >
                 KO
               </Avatar>
-            }
-            action={
-              <IconButton aria-label="settings">
-                <MoreVertIcon />
-              </IconButton>
             }
             title={pin?.countryName}
             subheader={pin?.timestamp}
@@ -84,6 +84,10 @@ export default function PinModal({
             />
           </CardContent>
         </Card>
+        <PinUserModal
+          childOpen={childOpen}
+          setChildOpen={() => setChildOpen(false)}
+        />
       </div>
     </Modal>
   );

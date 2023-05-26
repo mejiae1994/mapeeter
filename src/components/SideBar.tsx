@@ -20,6 +20,7 @@ import Divider from "@mui/material/Divider";
 import PinTemplateContainer from "./PinTemplateContainer";
 import Popup from "./Popup";
 import useLocalStorage from "../hooks/useLocalStorageHook";
+import UserProfile from "./UserProfile";
 
 type Anchor = "Menu";
 
@@ -227,6 +228,7 @@ export default function Sidebar({
           setHighlight={setHighlight}
         />
       )}
+      {currentTab === 2 && <UserProfile />}
     </Box>
   );
 

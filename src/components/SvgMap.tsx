@@ -41,7 +41,7 @@ export default function SvgMap({
   const scaleFactorMax = 6;
 
   //pin modal
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [clickedPin, setClickedPin] = useState<Pin | undefined>();
   const handleOpenModal = (e: React.MouseEvent, pin: Pin) => {
     e.preventDefault();
@@ -288,6 +288,7 @@ export default function SvgMap({
         handleCloseModal={handleCloseModal}
         pin={clickedPin}
       />
+
       <Button
         sx={{
           position: "absolute",
