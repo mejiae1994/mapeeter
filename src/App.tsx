@@ -4,6 +4,7 @@ import SvgMap from "./components/SvgMap";
 import Sidebar from "./components/SideBar";
 import useLocalStorage from "./hooks/useLocalStorageHook";
 import { Pin, PinTemplate } from "./types/types";
+import LeafMap from "./components/LeafMap";
 
 function App() {
   const [currentPinTemplate, setCurrentPinTemplate] = useState<
@@ -24,14 +25,15 @@ function App() {
     }`
   );
   return (
-    <div className="App">
-      <SvgMap
+    <div className="app">
+      {/* <SvgMap
         highlight={highlightedPin}
         selectedPinTemplate={currentPinTemplate}
         setMapPin={(pin: Pin) => setPins(pin)}
         placedPin={pins}
-      />
-      <Sidebar
+      /> */}
+      <LeafMap />
+      {/* <Sidebar
         setHighlight={setHighlightedPin}
         setCurrentTemplate={(template: PinTemplate | undefined) => {
           setCurrentPinTemplate(template);
@@ -39,7 +41,7 @@ function App() {
         placedPins={pins}
         handleDeletePin={handleDeletePin}
         selectedPinTemplate={currentPinTemplate}
-      />
+      /> */}
     </div>
   );
 }

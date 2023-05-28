@@ -44,6 +44,7 @@ export default function PinUserModal() {
   const [state, setState] = useState({
     pins: false,
     username: "",
+    darkMode: false,
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,6 +131,16 @@ export default function PinUserModal() {
                   />
                 }
                 label="Hide Your Pins"
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={state.darkMode}
+                    onChange={handleChange}
+                    name="darkMode"
+                  />
+                }
+                label="Dark Mode"
               />
               <TextField
                 onChange={handleChange}

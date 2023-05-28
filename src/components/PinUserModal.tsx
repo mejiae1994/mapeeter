@@ -122,7 +122,8 @@ export default function PinUserModal({ childOpen, setChildOpen }: UserProps) {
               style={{
                 display: "flex",
                 gap: ".5rem",
-                justifyContent: "center",
+                justifyContent: "flex-start",
+                overflowX: "scroll",
               }}
             >
               <LocalPoliceOutlinedIcon
@@ -133,6 +134,14 @@ export default function PinUserModal({ childOpen, setChildOpen }: UserProps) {
                 fontSize="large"
                 sx={{ color: "cyan" }}
               />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
+              <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
               <LocalPoliceOutlinedIcon fontSize="large" sx={{ color: "red" }} />
               <LocalPoliceOutlinedIcon
                 fontSize="large"

@@ -21,3 +21,13 @@ svg path:hover {
 .selected {
   background-color: rgb(222, 220, 220);
 }
+
+.app {
+  display: flex;
+}
+
+.leaflet-container {
+  height: 100vh;
+  flex-basis: 0;
+  flex-grow: 1;
+}
